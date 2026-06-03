@@ -3,63 +3,49 @@ package com.example.eventos
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Spinner
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-class EventoAdapter : RecyclerView.Adapter<EventoAdapter.EventoViewHoldelder>() {
 
-    companion object {
-        val eventos = mutableListOf<EventoModel>()
+class EventoAdapter(private val onItemClick: (EventoModel) -> Unit) :
+    RecyclerView.Adapter<EventoAdapter.EventoViewHoldelder>() {
+    private var listaDeEventos = listOf<EventoModel>()
 
-        fun addEvento(evento: EventoModel) {
-            eventos.add(evento)
-        }
+    fun atualizarLista(eventos: List<EventoModel>) {
+        listaDeEventos = eventos
+        notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): EventoViewHoldelder {
-        val view = LayoutInflater.from(p0.context)
-            .inflate(R.layout.evento_layout, p0, false)
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventoViewHoldelder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.evento_layout, parent, false)
         return EventoViewHoldelder(view)
     }
 
-    override fun onBindViewHolder(p0: EventoViewHoldelder, p1: Int) {
-        val evento = eventos[p1]
-        p0.bind(evento)
+    override fun onBindViewHolder(holder: EventoViewHoldelder, position: Int) {
+        val evento = listaDeEventos[position]
+
+        holder.bind(evento)
+
+        holder.itemView.setOnClickListener {
+            onItemClick(evento)
+        }
     }
 
     override fun getItemCount(): Int {
-        return eventos.size
-    }
-
-    fun addEvento(novoevento: EventoModel) {
-        eventos.add(novoevento)
-        notifyDataSetChanged()
-    }
-
-    fun updateEventos(newEventos: List<EventoModel>) {
-        eventos.clear()
-        eventos.addAll(newEventos)
-        notifyDataSetChanged()
+        return listaDeEventos.size
     }
 
     class EventoViewHoldelder(view: View) : RecyclerView.ViewHolder(view) {
 
         val titulo = view.findViewById<TextView>(R.id.eventoTitulo)
         val data = view.findViewById<TextView>(R.id.eventoData)
-        val hora = view.findViewById<TextView>(R.id.eventoHora)
-        val local = view.findViewById<TextView>(R.id.eventoLocal)
-        val descricion = view.findViewById<TextView>(R.id.eventoDescricao)
-        val palestra = view.findViewById<TextView>(R.id.eventoPalestrante)
-        val valor = view.findViewById<TextView>(R.id.eventoValor)
+
 
         fun bind(evento: EventoModel) {
+            // caso precise de mais campos, mudar no evento_layout e adicionar aqui também.
             titulo.text = evento.titulo
             data.text = evento.data
-            hora.text = evento.hora
-            local.text = evento.local
-            descricion.text = evento.descricao
-            palestra.text = evento.palestrante
-            valor.text = evento.valor
         }
     }
 }

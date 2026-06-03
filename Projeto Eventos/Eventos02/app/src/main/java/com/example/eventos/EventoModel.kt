@@ -7,6 +7,6 @@ data class EventoModel(
     val hora: String,
     val local: String,
     val descricao: String,
-    val palestrante: String? = null,
-    val valor: String? = null,
+    val palestrante: String? = "Não se aplica",
+    val valor: String? = "Grátis",
 )

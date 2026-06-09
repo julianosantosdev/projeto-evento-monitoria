@@ -19,11 +19,6 @@ class EditarEvento : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(binding.root)
 
-        android.util.Log.d(
-            "EDITAR",
-            "ID recebido = ${intent.getStringExtra("EVENTO_ID")}"
-        )
-
         val id = intent.getStringExtra("EVENTO_ID")
 
         val evento = id?.let {

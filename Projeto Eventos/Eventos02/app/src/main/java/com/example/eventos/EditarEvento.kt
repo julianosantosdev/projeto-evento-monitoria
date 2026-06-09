@@ -7,16 +7,23 @@ import android.widget.ArrayAdapter
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.example.eventos.databinding.ActivityCriarEventoBinding
+import com.example.eventos.databinding.ActivityEditarEventoBinding
 
-class CriarEvento : AppCompatActivity() {
+class EditarEvento : AppCompatActivity() {
+    private lateinit var binding: ActivityEditarEventoBinding
     private val viewModel: EventoViewModel by viewModels()
-    private lateinit var binding: ActivityCriarEventoBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityCriarEventoBinding.inflate(layoutInflater)
+        binding = ActivityEditarEventoBinding.inflate(layoutInflater)
         enableEdgeToEdge()
         setContentView(binding.root)
+
+        val id = intent.getStringExtra("EVENTO_ID")
+
+        val evento = id?.let {
+            viewModel.buscarPorId(it)
+        }
 
         val spinerEvento = binding.spinnerTipo
         val titulo = binding.ettituloevento
@@ -33,6 +40,16 @@ class CriarEvento : AppCompatActivity() {
             finish()
         }
 
+        evento?.let {
+            titulo.setText(it.titulo)
+            dataevento.setText(it.data)
+            horaEvento.setText(it.hora)
+            localevento.setText(it.local)
+            descricaoevento.setText(it.descricao)
+            valorevento.setText(it.valor)
+            palestra.setText(it.palestrante)
+        }
+
         val adapter = ArrayAdapter(
             this,
             android.R.layout.simple_spinner_dropdown_item,
@@ -40,6 +57,9 @@ class CriarEvento : AppCompatActivity() {
         )
 
         spinerEvento.adapter = adapter
+
+        val posicao = adapter.getPosition(evento?.tipo)
+        spinerEvento.setSelection(posicao)
 
         spinerEvento.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
@@ -87,8 +107,9 @@ class CriarEvento : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val evento =
+            val eventoAtualizado =
                 EventoModel(
+                    id = evento!!.id,
                     tipo = spinerEvento.selectedItem.toString(),
                     titulo = titulo.text.toString(),
                     data = dataevento.text.toString(),
@@ -99,7 +120,7 @@ class CriarEvento : AppCompatActivity() {
                     palestrante = palestra.text.toString()
                 )
 
-            viewModel.adicionarEvento(evento)
+            viewModel.atualizarEvento(eventoAtualizado)
             android.widget.Toast.makeText(
                 this,
                 "Evento salvo",
@@ -108,6 +129,6 @@ class CriarEvento : AppCompatActivity() {
             finish()
         }
 
-    }
 
+    }
 }

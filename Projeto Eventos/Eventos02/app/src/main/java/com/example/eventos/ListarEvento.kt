@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.eventos.databinding.ActivityListarEventoBinding
@@ -22,7 +23,36 @@ class ListarEvento : AppCompatActivity() {
         val btnCriar = binding.btnCriar
 
         val listaDeEventos = binding.recycleViewListaEventos
-        adapter = EventoAdapter()
+
+        adapter = EventoAdapter(
+            onItemClick = { evento ->
+
+                val intent =
+                    Intent(this, DetalharEventos::class.java)
+
+                intent.putExtra("EVENTO_ID", evento.id)
+
+                startActivity(intent)
+            },
+
+            onDeleteClick = { evento ->
+                AlertDialog.Builder(this)
+                    .setTitle("Excluir evento")
+                    .setMessage("Deseja realmente excluir este evento?")
+                    .setPositiveButton("Sim") { _, _ ->
+
+                        viewModel.removerEvento(evento.id)
+
+                        adapter.atualizarLista(
+                            viewModel.listarEventos()
+                        )
+                    }
+                    .setNegativeButton("Cancelar", null)
+                    .show()
+            }
+        )
+
+
         listaDeEventos.layoutManager = LinearLayoutManager(this)
         listaDeEventos.adapter = adapter
 

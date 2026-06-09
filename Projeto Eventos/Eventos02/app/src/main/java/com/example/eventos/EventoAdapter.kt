@@ -3,10 +3,14 @@ package com.example.eventos
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class EventoAdapter(private val onItemClick: (EventoModel) -> Unit) :
+class EventoAdapter(
+    private val onItemClick: (EventoModel) -> Unit,
+    private val onDeleteClick: (EventoModel) -> Unit
+) :
     RecyclerView.Adapter<EventoAdapter.EventoViewHoldelder>() {
     private var listaDeEventos = listOf<EventoModel>()
 
@@ -24,11 +28,13 @@ class EventoAdapter(private val onItemClick: (EventoModel) -> Unit) :
 
     override fun onBindViewHolder(holder: EventoViewHoldelder, position: Int) {
         val evento = listaDeEventos[position]
-
         holder.bind(evento)
-
         holder.itemView.setOnClickListener {
             onItemClick(evento)
+        }
+
+        holder.btnExcluir.setOnClickListener {
+            onDeleteClick(evento)
         }
     }
 
@@ -47,5 +53,8 @@ class EventoAdapter(private val onItemClick: (EventoModel) -> Unit) :
             titulo.text = evento.titulo
             data.text = evento.data
         }
+
+        val btnExcluir =
+            view.findViewById<ImageButton>(R.id.botaoDeletarEvento)
     }
 }

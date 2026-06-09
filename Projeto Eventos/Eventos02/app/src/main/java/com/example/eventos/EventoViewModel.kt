@@ -12,7 +12,15 @@ class EventoViewModel : ViewModel() {
         return EventoRepository.listarEventos()
     }
 
-    fun removerEvento(evento: EventoModel) {
-        EventoRepository.removerEvento(evento)
+    fun buscarPorId(id: String): EventoModel? {
+        return EventoRepository.buscarPorId(id)
+    }
+
+    fun atualizarEvento(evento: EventoModel) {
+        EventoRepository.atualizarEvento(evento)
+    }
+
+    fun removerEvento(id: String) {
+        EventoRepository.removerEvento(id)
     }
 }
